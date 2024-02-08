@@ -18,6 +18,7 @@ class CountryController extends Controller
         $countries = Country::all();
 
         return response()->json([
+            'status' => true,
             'message' => 'Se traen los Paises',
             'data' => $countries,
         ]);  
@@ -37,7 +38,7 @@ class CountryController extends Controller
 
         return response()->json([
             'message' => 'Pais creado exitosamente',
-            'country' => $country,
+            'data' => ['country' => $country],
         ]);
     }
 
