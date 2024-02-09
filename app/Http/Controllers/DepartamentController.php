@@ -16,11 +16,11 @@ class DepartamentController extends Controller
      */
     public function index(): JsonResponse
     {
-        $departaments = Departament::all(); 
+        $departaments = Departament::with('country')->get()->toArray(); 
 
         return response()->json([
             'message' => 'Se traen los departamentos',
-            'departament' => $departaments,
+            'data' => $departaments,
         ]);
     }
 
@@ -39,7 +39,7 @@ class DepartamentController extends Controller
 
         return response()->json([
             'message' => 'Departamento creado exitosamente',
-            'departament' => $departament,
+            'data' => $departament,
         ]);
     }
 
@@ -53,13 +53,9 @@ class DepartamentController extends Controller
     {
         $departament = Departament::find($id);
 
-        if (!$departament) {
-            return response()->json(['message' => 'Departamento no encontrado'],404);
-        }
-
         return response()->json([
             'message' => 'Detalles del Departamento',
-            'departament' => $departament,
+            'data' => $departament,
         ]);
     }
 
@@ -82,7 +78,7 @@ class DepartamentController extends Controller
 
         return response()->json([
             'message' => 'Nombre del Departamento actualizado exitosamente',
-            'departament' => $departament,
+            'data' => $departament,
         ]); 
     }
 

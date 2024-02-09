@@ -11,11 +11,13 @@ class Departament extends Model
         'name', 'country_id'
     ];
 
-    public function municipality(): HasMany{
+    public function municipality()
+    {
         return $this->hasMany(Municipality::class);
     }
 
-    public function country():BelongTo{
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 
