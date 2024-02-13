@@ -51,7 +51,7 @@ class DepartamentController extends Controller
      */
     public function show($id)
     {
-        $departament = Departament::find($id);
+        $departament = Departament::where('id',$id)->get();
 
         return response()->json([
             'message' => 'Detalles del Departamento',
