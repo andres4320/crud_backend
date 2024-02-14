@@ -15,13 +15,18 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $countries = Country::all();
+        try {
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Se traen los Paises',
-            'data' => $countries,
-        ]);  
+            $countries = Country::all();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Se traen los Paises',
+                'data' => $countries,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'País no encontrado'], 404);
+        }
     }
 
     /**
@@ -32,14 +37,18 @@ class CountryController extends Controller
      */
     public function store(Request $request)
     {
-        $country = new country();
-        $country->name = $request->name;
-        $country->save();
+        try {
+            $country = new country();
+            $country->name = $request->name;
+            $country->save();
 
-        return response()->json([
-            'message' => 'Pais creado exitosamente',
-            'data' => ['country' => $country],
-        ]);
+            return response()->json([
+                'message' => 'Pais creado exitosamente',
+                'data' => ['country' => $country],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al crear el País'], 500);
+        }
     }
 
     /**
@@ -50,16 +59,16 @@ class CountryController extends Controller
      */
     public function show($id)
     {
-        $country = Country::find($id);
+        try {
+            $country = Country::where('id', $id)->firstOrFail();
 
-        if (!$country) {
-            return response()->json(['message' => 'Pais no encontrado'], 404);
+            return response()->json([
+                'message' => 'Detalles del Pais',
+                'country' => $country,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'País no encontrado'], 404);
         }
-
-        return response()->json([
-            'message' => 'Detalles del Pais',
-            'country' => $country,
-        ]);
     }
 
     /**
@@ -71,18 +80,22 @@ class CountryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|max:255|string',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|max:255|string',
+            ]);
 
-        $country = Country::findOrFail($id);
-        $country->name = $request->name;
-        $country->save();
+            $country = Country::findOrFail($id);
+            $country->name = $request->name;
+            $country->save();
 
-        return response()->json([
-            'message' => 'Nombre del Pais actualizado exitosamente',
-            'country' => $country,
-        ]); 
+            return response()->json([
+                'message' => 'Nombre del Pais actualizado exitosamente',
+                'country' => $country,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'País no encontrado'], 404);
+        }
     }
 
     /**
@@ -96,14 +109,12 @@ class CountryController extends Controller
         try {
             $country = Country::findOrFail($id);
             $country->delete();
-    
+
             return response()->json([
                 'message' => 'Pais eliminado exitosamente',
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Pais no encontrado'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el Pais'], 500);
-        }
+        } 
     }
 }

@@ -16,12 +16,16 @@ class DepartamentController extends Controller
      */
     public function index(): JsonResponse
     {
-        $departaments = Departament::with('country')->get()->toArray(); 
+        try {
+            $departaments = Departament::with('country')->get()->toArray(); 
 
         return response()->json([
             'message' => 'Se traen los departamentos',
             'data' => $departaments,
         ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Departamento no encontrado'], 404);
+        }
     }
 
     /**
@@ -32,15 +36,19 @@ class DepartamentController extends Controller
      */
     public function store(Request $request)
     {
-        $departament = new Departament();
-        $departament->name = $request->name;
-        $departament->country_id = $request->country_id;
-        $departament->save();
+        try {
+            $departament = new Departament();
+            $departament->name = $request->name;
+            $departament->country_id = $request->country_id;
+            $departament->save();
 
-        return response()->json([
-            'message' => 'Departamento creado exitosamente',
-            'data' => $departament,
-        ]);
+            return response()->json([
+                'message' => 'Departamento creado exitosamente',
+                'data' => $departament,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al crear el Departamento'], 500);
+        }
     }
 
     /**
@@ -51,12 +59,16 @@ class DepartamentController extends Controller
      */
     public function show($id)
     {
-        $departament = Departament::where('id',$id)->get();
+        try {
+            $departament = Departament::where('id', $id)->firstOrFail();
 
-        return response()->json([
-            'message' => 'Detalles del Departamento',
-            'data' => $departament,
-        ]);
+            return response()->json([
+                'message' => 'Detalles del Departamento',
+                'data' => $departament,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Departamento no encontrado'], 404);
+        }
     }
 
     /**
@@ -68,18 +80,22 @@ class DepartamentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|max:255|string',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|max:255|string',
+            ]);
 
-        $departament = Departament::findOrFail($id);
-        $departament->name = $request->name;
-        $departament->save();
+            $departament = Departament::findOrFail($id);
+            $departament->name = $request->name;
+            $departament->save();
 
-        return response()->json([
-            'message' => 'Nombre del Departamento actualizado exitosamente',
-            'data' => $departament,
-        ]); 
+            return response()->json([
+                'message' => 'Nombre del Departamento actualizado exitosamente',
+                'data' => $departament,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Departamento no encontrado'], 404);
+        }
     }
 
     /**
@@ -93,14 +109,12 @@ class DepartamentController extends Controller
         try {
             $departament = Departament::findOrFail($id);
             $departament->delete();
-    
+
             return response()->json([
                 'message' => 'Departamento eliminado exitosamente',
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Departamento no encontrado'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el Departamento'], 500);
         }
     }
 }

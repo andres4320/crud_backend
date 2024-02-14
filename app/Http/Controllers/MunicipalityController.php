@@ -13,14 +13,18 @@ class MunicipalityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() :JsonResponse 
+    public function index(): JsonResponse
     {
-        $municipalities = Municipality::all(); 
+        try {
+            $municipalities = Municipality::all();
 
-        return response()->json([
-            'message' => 'Se traen los municipios',
-            'municipality' => $municipalities,
-        ]);  
+            return response()->json([
+                'message' => 'Se traen los municipios',
+                'municipality' => $municipalities,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Municipio no encontrado'], 404);
+        }
     }
 
     /**
@@ -31,15 +35,19 @@ class MunicipalityController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $municipality = new Municipality();
-        $municipality->name = $request->name;
-        $municipality->departaments_id = $request->departaments_id;
-        $municipality->save();
+        try {
+            $municipality = new Municipality();
+            $municipality->name = $request->name;
+            $municipality->departaments_id = $request->departaments_id;
+            $municipality->save();
 
-        return response()->json([
-            'message' => 'Municipio creado exitosamente',
-            'municipality' => $municipality,
-        ]);
+            return response()->json([
+                'message' => 'Municipio creado exitosamente',
+                'municipality' => $municipality,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al crear el Municipio'], 500);
+        }
     }
 
     /**
@@ -50,16 +58,20 @@ class MunicipalityController extends Controller
      */
     public function show($id): JsonResponse
     {
-       $municipality = Municipality::find($id);
+        try {
+            $municipality = Municipality::find($id);
 
-        if (!$municipality) {
+            if (!$municipality) {
+                return response()->json(['message' => 'Municipio no encontrado'], 404);
+            }
+
+            return response()->json([
+                'message' => 'Detalles del Municipio',
+                'municipality' => $municipality,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Municipio no encontrado'], 404);
         }
-
-        return response()->json([
-            'message' => 'Detalles del Municipio',
-            'municipality' => $municipality,
-        ]);
     }
 
     /**
@@ -71,18 +83,22 @@ class MunicipalityController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|max:255|string',
-        ]);
-
-        $municipality = Municipality::findOrFail($id);
-        $municipality->name = $request->name;
-        $municipality->save();
-
-        return response()->json([
-            'message' => 'Nombre del municipio actualizado exitosamente',
-            'municipality' => $municipality,
-        ]); 
+        try{
+            $request->validate([
+                'name' => 'required|max:255|string',
+            ]);
+    
+            $municipality = Municipality::findOrFail($id);
+            $municipality->name = $request->name;
+            $municipality->save();
+    
+            return response()->json([
+                'message' => 'Nombre del municipio actualizado exitosamente',
+                'municipality' => $municipality,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Municipio no encontrado'], 404);
+        }
     }
 
     /**
@@ -96,14 +112,12 @@ class MunicipalityController extends Controller
         try {
             $municipality = Municipality::findOrFail($id);
             $municipality->delete();
-    
+
             return response()->json([
                 'message' => 'Municipio eliminado exitosamente',
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Municipio no encontrado'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al eliminar el municipio'], 500);
-        } 
+        }
     }
 }
