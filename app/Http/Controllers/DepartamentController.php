@@ -6,23 +6,28 @@ use App\Models\Departament;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-
 class DepartamentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Responsecd
+     * @return \Illuminate\Http\Response
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            $departaments = Departament::with('country')->get()->toArray(); 
+            $departaments = Departament::with('country');
 
-        return response()->json([
-            'message' => 'Se traen los departamentos',
-            'data' => $departaments,
-        ]);
+            if ($request->countryId) {
+                $departaments = $departaments->where('country_id', $request->countryId);
+            }
+
+            $departaments = $departaments->get()->toArray();
+
+            return response()->json([
+                'message' => 'Se traen los departamentos',
+                'data' => $departaments,
+            ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Departamento no encontrado'], 404);
         }
