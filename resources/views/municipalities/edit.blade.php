@@ -10,8 +10,8 @@
         <label for="name">Name:</label>
         <input type="text" name="name" value="{{ $municipality->name }}" required>
         
-        <label for="departament_id">Departament ID:</label>
-        <input type="number" name="departament_id" value="{{ $municipality->departament_id }}" required>
+        <label for="departaments_id">Departament ID:</label>
+        <input type="number" name="departaments_id" value="{{ $municipality->departaments_id }}" required>
         
         <button type="submit">Update</button>
     </form>

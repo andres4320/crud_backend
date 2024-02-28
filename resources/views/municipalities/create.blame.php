@@ -9,8 +9,8 @@
         <label for="name">Name:</label>
         <input type="text" name="name" required>
         
-        <label for="departament_id">Departament ID:</label>
-        <input type="number" name="departament_id" required>
+        <label for="departaments_id">Departament ID:</label>
+        <input type="number" name="departaments_id" required>
         
         <button type="submit">Create</button>
     </form>

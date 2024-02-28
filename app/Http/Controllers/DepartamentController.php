@@ -39,7 +39,7 @@ class DepartamentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         try {
             $departament = new Departament();
@@ -62,7 +62,7 @@ class DepartamentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         try {
             $departament = Departament::where('id', $id)->firstOrFail();

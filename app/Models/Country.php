@@ -14,7 +14,7 @@ class Country extends Model
         'name'
     ];
 
-    public function departamentos()
+    public function departament()
     {
         return $this->hasMany(Departament::class);
     }

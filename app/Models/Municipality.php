@@ -14,6 +14,7 @@ class Municipality extends Model
 
     public function departament()
     {
-        return $this->belongsTo(Departament::class);
+        return $this->belongsTo(Departament::class, 'departaments_id');
+        //Se agrego 'departaments_id' en la linea anterior, porque se puso el nombre de la tabla en plural
     }
 }
