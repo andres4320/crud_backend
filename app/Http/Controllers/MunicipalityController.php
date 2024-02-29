@@ -89,11 +89,18 @@ class MunicipalityController extends Controller
         try{
             $request->validate([
                 'name' => 'required|max:255|string',
+                'departaments_id' =>'required|integer',
             ]);
     
             $municipality = Municipality::findOrFail($id);
             $municipality->name = $request->name;
+            $municipality->departaments_id = $request->departaments_id;
+
+            info('Antes de Guardar:', $municipality->toArray());
+
             $municipality->save();
+
+            info('Despues de Guardar:', $municipality->toArray());
     
             return response()->json([
                 'message' => 'Nombre del municipio actualizado exitosamente',

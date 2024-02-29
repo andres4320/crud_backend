@@ -83,16 +83,23 @@ class DepartamentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonReponse
     {
         try {
             $request->validate([
                 'name' => 'required|max:255|string',
+                'country_id' => 'required|integer',
             ]);
 
             $departament = Departament::findOrFail($id);
             $departament->name = $request->name;
+            $departament->country_id = $request->country_id;
+
+            info('Antes de guardar:', $departament->toArray());
+
             $departament->save();
+
+            info('Después de guardar:', $departament->toArray());
 
             return response()->json([
                 'message' => 'Nombre del Departamento actualizado exitosamente',
