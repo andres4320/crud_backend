@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
 {
+    protected $addHttpCookie = true;
     /**
      * The URIs that should be excluded from CSRF verification.
      *
@@ -23,6 +24,11 @@ class VerifyCsrfToken extends Middleware
         //Controles de Paises
         'countries/create',
         'countries/update/*',
-        'countries/destroy/*', 
+        'countries/destroy/*',
+        //Controles de Usuarios
+        '/users/create',
+
+        'auth/facebook/callback',
+        'auth/google/callback',
     ];
 }
