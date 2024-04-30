@@ -26,7 +26,7 @@ class VerifyCsrfToken extends Middleware
         'countries/update/*',
         'countries/destroy/*',
         //Controles de Usuarios
-        '/users/create',
+        '/user/register',
 
         'auth/facebook/callback',
         'auth/google/callback',

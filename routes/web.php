@@ -36,7 +36,7 @@ Route::middleware(['cors'])->group(function () {
         return view('welcome');
     });
 
-    Route::view('/{any}', 'angular-app.index')->where('any', '.*');
+    // Route::view('/{any}', 'angular-app.index')->where('any', '.*');
 
 });
 
