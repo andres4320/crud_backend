@@ -19,9 +19,9 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
             'gender' => $request->gender,
             'profession' => $request->profession,
-            'country' => $request->country,
-            'department' => $request->department,
-            'municipality' => $request->municipality
+            // 'country' => $request->country,
+            // 'department' => $request->department,
+            'municipality_id' => $request->municipality_id
         ]);
 
         $token = JWTAuth::fromUser($user);

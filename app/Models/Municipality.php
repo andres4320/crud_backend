@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Municipality extends Model
@@ -16,5 +15,10 @@ class Municipality extends Model
     {
         return $this->belongsTo(Departament::class, 'departaments_id');
         //Se agrego 'departaments_id' en la linea anterior, porque se puso el nombre de la tabla en plural
+    }
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'municipality_id');
     }
 }
