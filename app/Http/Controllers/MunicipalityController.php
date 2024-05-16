@@ -23,8 +23,6 @@ class MunicipalityController extends Controller
             }
 
             $municipalities = $municipalities->get();
-            logger($municipalities);
-
             return response()->json([
                 'message' => 'Se traen los municipios',
                 'data' => $municipalities,
@@ -130,4 +128,14 @@ class MunicipalityController extends Controller
             return response()->json(['message' => 'Municipio no encontrado'], 404);
         }
     }
+
+//     public function getMunicipalityNames(Request $request): JsonResponse
+// {
+//     $municipalityIds = explode(',', $request->input('ids'));
+//     $municipalityNames = Municipality::whereIn('id', $municipalityIds)
+//         ->pluck('name')
+//         ->toArray();
+
+//     return response()->json($municipalityNames);
+// }
 }

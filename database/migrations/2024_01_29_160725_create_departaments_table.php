@@ -17,7 +17,6 @@ class CreateDepartamentsTable extends Migration
             $table->id();
             $table->string('name', 255);
             $table->timestamps();
-
             $table ->unsignedBigInteger('country_id');
             $table->foreign('country_id')->references('id')->on('country');
 

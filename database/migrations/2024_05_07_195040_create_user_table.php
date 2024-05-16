@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeMunicipalityIdTypeInUsersTable extends Migration
+class CreateUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,18 @@ class ChangeMunicipalityIdTypeInUsersTable extends Migration
      */
     public function up()
     {
+
         Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 255);
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('gender');
-            $table->string('profession');
-            $table->foreignId('municipality_id')->constrained('municipalities');
+            $table->unsignedBigInteger('gender_id');
+            $table->foreign('gender_id')->references('id')->on('gender');
+            $table->unsignedBigInteger('profession_id');
+            $table->foreign('profession_id')->references('id')->on('profession');
+            $table->unsignedBigInteger('municipality_id');
+            $table->foreign('municipality_id')->references('id')->on('municipality');
             $table->timestamps();
         });
     }
@@ -32,8 +36,6 @@ class ChangeMunicipalityIdTypeInUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('user', function (Blueprint $table) {
-            $table->integer('municipality_id')->change();
-        });
+        Schema::dropIfExists('user');
     }
 }

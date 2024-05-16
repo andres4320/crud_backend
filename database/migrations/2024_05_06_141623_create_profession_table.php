@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateUserTable extends Migration
+class CreateProfessionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class UpdateUserTable extends Migration
      */
     public function up()
     {
-        Schema::table('user', function (Blueprint $table) {
-            $table->foreign('municipality_id')->references('id')->on('municipality');
+        Schema::create('profession', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 255);
+            $table->timestamps();
         });
     }
 
@@ -25,6 +27,6 @@ class UpdateUserTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('profession');
     }
 }

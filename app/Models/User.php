@@ -16,8 +16,8 @@ class User extends Authenticatable implements JWTSubject
         'name', 
         'email', 
         'password', 
-        'gender',
-        'profession',
+        'gender_id',
+        'profession_id',
         'municipality_id'
     ];
 
@@ -36,5 +36,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Municipality::class, 'municipality_id');
     }
 
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class, 'profession_id');
+    }
 
+    public function gender(): BelongsTo
+    {
+        return $this->belongsTo(Gender::class, 'gender_id');
+    }
 }

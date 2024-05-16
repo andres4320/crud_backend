@@ -1,41 +1,118 @@
 <?php
+namespace App\Http\Controllers;
 
-// namespace App\Http\Controllers;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
-// use Illuminate\Http\Request;
-// use App\Models\User;
-// use JWTAuth;
+class UserController extends Controller
+{
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $users = User::all();
 
-// class UserController extends Controller
-// {
-//     public function store(Request $request)
-//     {
-//         try {
-//             // Validar los datos del usuario
-//             $request->validate([
-//                 'name' => 'required|string|max:255',
-//                 'email' => 'required|string|email|unique:users|max:255',
-//                 'password' => 'required|string|min:8',
-//             ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Se traen los usuarios',
+                'data' => $users,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Usuarios no encontrados'], 404);
+        }
+    }
 
-//             // Crear un nuevo usuario
-//             $user = new User([
-//                 'name' => $request->name,
-//                 'email' => $request->email,
-//                 'password' => bcrypt($request->password),
-//             ]);
+    public function getUsersByMunicipality(Request $request): JsonResponse
+    {
+        try {
+            $usersByMunicipality = User::select('municipality.name', \DB::raw('count(*) as total'))
+                ->join('municipality', 'user.municipality_id', 'municipality.id')
+                ->groupBy('municipality_id');
 
-//             $token = JWTAuth::fromUser($user);
+            $usersByMunicipality = $usersByMunicipality->get();
 
-//             // Guardar el usuario en la base de datos
-//             $user->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Se trae la cantidad de usuarios por municipio',
+                'data' => $usersByMunicipality,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'No se encontraron usuarios'], 404);
+        }
+    }
 
-//             // Devolver una respuesta indicando que el usuario ha sido creado
-//             return response()->json(compact('user', 'token'),201);
-//         } catch (\Exception $e) {
-//             // Capturar excepciones y devolver una respuesta de error
-//             \Log::error('Error al crear usuario: ' . $e->getMessage());
-//             return response()->json(['error' => 'Error interno del servidor'], 500);
-//         }
-//     }
-// }
+    public function getUsersByDepartament(Request $request): JsonResponse
+    {
+        try {
+            $usersByDepartament = User::select('departaments.name', \DB::raw('count(*) as total'))
+                ->join('municipality', 'user.municipality_id', 'municipality.id')
+                ->join('departaments', 'municipality.departaments_id', 'departaments.id')
+                ->groupBy('departaments.id')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Se trae la cantidad de usuarios por departamento',
+                'data' => $usersByDepartament,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'No se encontraron usuarios'], 404);
+        }
+    }
+
+    public function getUsersByCountry(Request $request): JsonResponse
+    {
+        try {
+            $usersByCountry = User::select('country.name', \DB::raw('count(*) as total'))
+                ->join('municipality', 'user.municipality_id', 'municipality.id')
+                ->join('departaments', 'municipality.departaments_id', 'departaments.id')
+                ->join('country', 'departaments.country_id', 'country.id')
+                ->groupBy('country.id')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Se trae la cantidad de usuarios por país',
+                'data' => $usersByCountry,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'No se encontraron usuarios'], 404);
+        }
+    }
+
+    public function getUsersByProfession(Request $request): JsonResponse
+    {
+        try {
+            $usersByProfession = User::select('profession.name', \DB::raw('count(*) as total'))
+                ->join('profession', 'user.profession_id', 'profession.id')
+                ->groupBy('profession.id')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Se trae la cantidad de usuarios por profesion',
+                'data' => $usersByProfession,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'No se encontraron usuarios'], 404);
+        }
+    }
+
+    public function getUsersByGender(Request $request): JsonResponse
+    {
+        try {
+            $usersByGender = User::select('gender.name', \DB::raw('count(*) as total'))
+                ->join('gender', 'user.gender_id', 'gender.id')
+                ->groupBy('gender.id')
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Se trae la cantidad de usuarios por género',
+                'data' => $usersByGender,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'No se encontraron usuarios'], 404);
+        }
+    }
+}
